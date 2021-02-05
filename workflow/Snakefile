@@ -4,7 +4,7 @@ rule nifti2dicom:
     output:
         directory("results/{base_name}")
     container:
-        "resources/nifti2dicom.sif"
+        "docker://tristankk/nifti2dicom"
     shell:
         "nifti2dicom -i {input} -o {output} -y --studyinstanceuid {config[studyinstanceuid]} --patientname {config[patientname]}"
 
