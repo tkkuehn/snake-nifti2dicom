@@ -1,12 +1,16 @@
+rule all:
+    input:
+        dynamic("results/sub-01_ses-20190709_geometry_crossing_angle/N2D_{num}.dcm")
+
 rule nifti2dicom:
     input:
         "data/{base_name}.nii.gz"
     output:
-        directory("results/{base_name}")
+        dynamic("results/{base_name}/N2D_{num}.dcm")
     container:
-        "docker://tristankk/nifti2dicom"
+        "docker://tristankk/nifti2dicom:0.4.11"
     shell:
-        "nifti2dicom -i {input} -o {output} -y --studyinstanceuid {config[studyinstanceuid]} --patientname {config[patientname]}"
+        "nifti2dicom -i {input} -o results/{wildcards.base_name} -y --studyinstanceuid {config[studyinstanceuid]} --patientname {config[patientname]}"
 
 rule push_to_orthanc:
     input:
