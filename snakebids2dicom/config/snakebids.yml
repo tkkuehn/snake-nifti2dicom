@@ -1,0 +1,71 @@
+analysis_level: participant
+analysis_levels: &id001
+- participant
+bids_dir: /home/tk/Code/western_ossd/nifti2dicom-workflow/data/3am_print_param_phantoms
+debug: true
+derivatives: false
+exclude_participant_label: null
+output_dir: /home/tk/Code/western_ossd/nifti2dicom-workflow
+parse_args:
+  --derivatives:
+    default: false
+    help: 'Path(s) to a derivatives dataset, for folder(s) that contains multiple
+      derivatives datasets (default: %(default)s) '
+    nargs: +
+  --exclude_participant_label:
+    help: The label(s) of the participant(s) that should be excluded. The label corresponds
+      to sub-<participant_label> from the BIDS spec (so it does not include "sub-").
+      If this parameter is not provided all subjects should be analyzed. Multiple
+      participants can be specified with a space separated list.
+    nargs: +
+  --participant_label:
+    help: The label(s) of the participant(s) that should be analyzed. The label corresponds
+      to sub-<participant_label> from the BIDS spec (so it does not include "sub-").
+      If this parameter is not provided all subjects should be analyzed. Multiple
+      participants can be specified with a space separated list.
+    nargs: +
+  analysis_level:
+    choices: *id001
+    help: Level of the analysis that will be performed.
+  bids_dir:
+    help: The directory with the input dataset formatted according to the BIDS standard.
+  output_dir:
+    help: The directory where the output files should be stored. If you are running
+      group level analysis this folder should be prepopulated with the results of
+      the participant level analysis.
+participant_label: null
+pybids_inputs:
+  T1map:
+    filters:
+      datatype: anat
+      extension: .nii
+      invalid_filters: allow
+      scope: raw
+      suffix: T1map
+    wildcards:
+    - subject
+    - session
+    - acquisition
+  T2map:
+    filters:
+      datatype: anat
+      extension: .nii
+      invalid_filters: allow
+      scope: raw
+      suffix: T2map
+    wildcards:
+    - subject
+    - session
+    - acquisition
+singularity:
+  nifti2dicom: docker://tristankk/nifti2dicom
+snakemake_args:
+- --use-singularity
+- --cores
+- --config
+- studyinstanceuid=5.4.3.2.1
+- patientname=phantomt1map
+snakemake_dir: /home/tk/Code/western_ossd/nifti2dicom-workflow
+targets_by_analysis_level:
+  participant:
+  - ''
